@@ -11,6 +11,12 @@ send_notification() {
   notify-send -u critical "󱐋 Time to recharge!" "Battery is down to ${1}%" -i battery-caution -t 30000
 }
 
+# Exit early if battery level is empty or not a valid number
+# credit: Issue #2886 by data-davey
+if [[ -z "$BATTERY_LEVEL" ]] || ! [[ "$BATTERY_LEVEL" =~ ^[0-9]+$ ]]; then
+  exit 0
+fi
+
 if [[ $BATTERY_STATE == "discharging" && $BATTERY_LEVEL -le $BATTERY_THRESHOLD ]]; then
   if [[ ! -f $NOTIFICATION_FLAG ]]; then
     send_notification $BATTERY_LEVEL
